@@ -1,0 +1,19 @@
+footer {
+    .controls {
+        text-align: center;
+        padding: 1em 0;
+
+        button {
+            padding: 0.3em 1em;
+            font-size: 1em;
+            margin: 0 0.5em;
+            cursor: pointer;
+        }
+    }
+    
+    .status {
+        color: #fff;
+        font-size: 1em;
+        text-align: center;
+    }
+}
