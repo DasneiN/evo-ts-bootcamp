@@ -1,13 +1,18 @@
-import '../styles/Main.scss';
+import { Component } from "react";
+import "../styles/Main.scss";
 
-export default function Main() {
-  return (
-    <main>
-      <div className="cols-container">
-        <div className="col"></div>
-        <div className="col"></div>
-        <div className="col"></div>
-      </div>
-    </main>
-  );
+class Main extends Component {
+  render() {
+    return (
+      <main>
+        <div className="cols-container">
+          <div className="col"></div>
+          <div className="col"></div>
+          <div className="col"></div>
+        </div>
+      </main>
+    );
+  }
 }
+
+export default Main;
