@@ -1,19 +1,72 @@
 footer {
-    .controls {
-        text-align: center;
-        padding: 1em 0;
+  .controls {
+    text-align: center;
+    padding: 1em 0;
 
-        button {
-            padding: 0.3em 1em;
-            font-size: 1em;
-            margin: 0 0.5em;
-            cursor: pointer;
+    button {
+      padding: 0.3em 1em;
+      font-size: 1em;
+      margin: 0 0.5em;
+      cursor: pointer;
+    }
+  }
+
+  .status {
+    p {
+      color: #fff;
+      font-size: 1em;
+      text-align: center;
+    }
+  }
+
+  .options {
+    margin-top: 2em;
+    border-top: 1px solid rgba(255, 255, 255, 0.5);
+
+    h2 {
+      text-align: center;
+      font-size: 1.5em;
+      color: #fff;
+      padding: 1em 0;
+    }
+
+    .options-container {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+
+      fieldset {
+        margin: 1em;
+        border: none;
+
+        label {
+          color: #fff;
+          margin-right: 1em;
         }
+
+        input[type="range"] {
+          width: 200px;
+          appearance: none;
+          background: transparent;
+        }
+
+        input[type="range"]::-webkit-slider-runnable-track {
+          border-radius: 3px;
+          height: 7px;
+          border: 1px solid #000;
+          background-color: #fff;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+          background: #ecf0f1;
+          border: 1px solid #000;
+          border-radius: 100%;
+          cursor: pointer;
+          width: 15px;
+          height: 15px;
+          appearance: none;
+          margin-top: -4px;
+        }
+      }
     }
-    
-    .status {
-        color: #fff;
-        font-size: 1em;
-        text-align: center;
-    }
+  }
 }

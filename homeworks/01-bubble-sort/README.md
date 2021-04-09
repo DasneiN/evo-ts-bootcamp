@@ -1,22 +1,22 @@
 ## Task requirements:
 #### What is required:
-[ ] Use Create React App with TypeScript.
-[ ] Use React for rendering (ONLY React Class Components and React Stateless Components).
-[ ] Use React lifecycle methods and React state.
-[ ] Define types as much and clear as possible.
-[ ] Implement bubble sort algorithm and visualize it.
+[x] Use Create React App with TypeScript.
+[x] Use React for rendering (ONLY React Class Components and React Stateless Components).
+[x] Use React lifecycle methods and React state.
+[x] Define types as much and clear as possible.
+[x] Implement bubble sort algorithm and visualize it.
 [ ] Deploy your implementation on the Internet (free resources: gh-pages, surge, netlify, vercel).
-[ ] Have to work on the latest Google Chrome on the desktop (all other devices and browsers are up to you).
+[x] Have to work on the latest Google Chrome on the desktop (all other devices and browsers are up to you).
 
 #### Required app options:
-[ ] Ability to generate array of random length with random values.
-[ ] Ability to watch changes while sorting an array.
-[ ] Ability to see the status of the app (sorting in progress, sorted or what you wish to add).
+[x] Ability to generate array of random length with random values.
+[x] Ability to watch changes while sorting an array.
+[x] Ability to see the status of the app (sorting in progress, sorted or what you wish to add).
 
 #### All other ideas are up to you and your imagination. For example:
 [ ] Ability to go step by step manually.
-[ ] Ability to pause the visualization.
-[ ] Ability to customize the interval.
+[x] Ability to pause the visualization.
+[x] Ability to customize the interval.
 
 
 ## Available Scripts

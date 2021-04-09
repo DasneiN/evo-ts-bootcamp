@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { ChangeEvent, Component, MouseEvent } from "react";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -9,6 +9,8 @@ import { Col } from "./typings/index";
 import generateCols from "./helpers/generate_cols";
 import sleep from "./helpers/sleep";
 
+import CONFIG from "./config";
+
 import "./App.css";
 
 export enum STATUS {
@@ -18,7 +20,12 @@ export enum STATUS {
   SOLVED,
 }
 
+export type AppConfig = {
+  stepInterval: number;
+};
+
 type AppProps = {};
+
 type AppState = {
   cols: Array<Col>;
   status: STATUS;
@@ -26,6 +33,7 @@ type AppState = {
     i: number;
     j: number;
   };
+  config: AppConfig;
 };
 
 class App extends Component<AppProps, AppState> {
@@ -35,6 +43,9 @@ class App extends Component<AppProps, AppState> {
     progress: {
       i: 0,
       j: 0,
+    },
+    config: {
+      stepInterval: CONFIG.SORTING_DELAY,
     },
   };
 
@@ -82,10 +93,15 @@ class App extends Component<AppProps, AppState> {
 
       cols[j].active = true;
       this.updateCols(cols);
-      await sleep();
+      await sleep(this.state.config.stepInterval);
 
       while (j > 0) {
         if (this.state.status !== STATUS.SORTING) {
+          if (this.state.status === STATUS.NOT_SOLVED) {
+            i = 0;
+            j = 0;
+          }
+
           this.setState({
             progress: { i, j },
           });
@@ -104,7 +120,7 @@ class App extends Component<AppProps, AppState> {
         }
 
         this.updateCols(cols);
-        await sleep();
+        await sleep(this.state.config.stepInterval);
         j -= 1;
       }
 
@@ -119,13 +135,32 @@ class App extends Component<AppProps, AppState> {
     });
   }
 
-  async pauseSorting(): Promise<void> {
-    this.setState({ status: STATUS.PAUSED });
-  }
-
   updateCols(updatedCols: Array<Col>): void {
     this.setState({
       cols: updatedCols,
+    });
+  }
+
+  start(e: MouseEvent<HTMLButtonElement>): void {
+    e.preventDefault();
+    this.startSorting();
+  }
+
+  pause(e: MouseEvent<HTMLButtonElement>): void {
+    e.preventDefault();
+    this.setState({ status: STATUS.PAUSED });
+  }
+
+  reset(e: MouseEvent<HTMLButtonElement>): void {
+    e.preventDefault();
+    this.resetCols();
+  }
+
+  changeInterval(e: ChangeEvent<HTMLInputElement>): void {
+    this.setState({
+      config: {
+        stepInterval: +e.target.value,
+      },
     });
   }
 
@@ -135,10 +170,12 @@ class App extends Component<AppProps, AppState> {
         <Header />
         <Main cols={this.state.cols} />
         <Footer
-          reset={this.resetCols.bind(this)}
-          start={this.startSorting.bind(this)}
-          pause={this.pauseSorting.bind(this)}
+          reset={this.reset.bind(this)}
+          start={this.start.bind(this)}
+          pause={this.pause.bind(this)}
+          changeInterval={this.changeInterval.bind(this)}
           status={this.state.status}
+          config={this.state.config}
         />
       </div>
     );
