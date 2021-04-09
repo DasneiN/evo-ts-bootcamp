@@ -1,12 +1,19 @@
-import getRandomValue from "./generate_random_value";
+import generateRandomValue from "./generate_random_value";
+
+import CONFIG from '../config';
 
 type Col = {
   id: number;
   value: number;
 };
 
-export default function generateCols(arrayLength: number): Array<Col> {
-  return new Array(arrayLength)
+export default function generateCols(): Array<Col> {
+    const newColsLength: number = generateRandomValue(
+      CONFIG.MIN_COLS,
+      CONFIG.MAX_COLS
+    );
+    
+  return new Array(newColsLength)
     .fill(null)
-    .map((c, id) => ({ id, value: getRandomValue() }));
+    .map((c, id) => ({ id, value: generateRandomValue() }));
 }

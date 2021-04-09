@@ -2,18 +2,18 @@ import { Component } from "react";
 import "../styles/Footer.scss";
 
 type FooterProps = {
-  generate: () => void;
+  reset: () => void;
   start: () => void;
 };
 
 class Footer extends Component<FooterProps> {
   render() {
-    const { generate, start } = this.props;
+    const { reset, start } = this.props;
 
     return (
       <footer>
         <div className="controls">
-          <button onClick={generate}>New set</button>
+          <button onClick={reset}>New set</button>
           <button onClick={start}>Start</button>
         </div>
         <p className="status">Not solved | Paused | Solved</p>

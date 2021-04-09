@@ -5,15 +5,16 @@ main {
 
     .cols-container {
         height: 200px;
-        width: auto;
-        // background-color: rgba(255,255,255,0.5);
+        width: 200px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
 
         .col {
             width: 10px;
             height: 200px;
             background-color: #faebd7;
             border: 1px solid #c7b7a3;
-            float: left;
             border-radius: 4px;
         }
     }
