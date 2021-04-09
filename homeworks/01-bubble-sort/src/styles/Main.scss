@@ -16,6 +16,10 @@ main {
             background-color: #faebd7;
             border: 1px solid #c7b7a3;
             border-radius: 4px;
+
+            &.active {
+                background-color: darken(#faebd7, 20%);
+            }
         }
     }
 }

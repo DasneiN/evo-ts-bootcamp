@@ -17,7 +17,16 @@ class Main extends Component<MainProps> {
         <div className="cols-container">
           {this.props.cols.map((col) => {
             const height = getColHeight(col.value);
-            return <div key={col.id} className="col" style={{ height }}></div>;
+            const { active } = col;
+            const colClassName = `col ${active ? 'active' : ''}`;
+
+            return (
+              <div
+                key={col.id}
+                className={colClassName}
+                style={{ height }}
+              ></div>
+            );
           })}
         </div>
       </main>
