@@ -11,17 +11,31 @@ import sleep from "./helpers/sleep";
 
 import "./App.css";
 
-// TODO: move to methods
-function startSorting(): void {
-  console.log("::: startSorting");
+export enum STATUS {
+  NOT_SOLVED,
+  PAUSED,
+  SORTING,
+  SOLVED,
 }
 
 type AppProps = {};
-type AppState = { cols: Array<Col> };
+type AppState = {
+  cols: Array<Col>;
+  status: STATUS;
+  progress: {
+    i: number;
+    j: number;
+  };
+};
 
 class App extends Component<AppProps, AppState> {
   state = {
     cols: [],
+    status: STATUS.NOT_SOLVED,
+    progress: {
+      i: 0,
+      j: 0,
+    },
   };
 
   componentDidMount(): void {
@@ -33,21 +47,53 @@ class App extends Component<AppProps, AppState> {
 
     this.setState({
       cols: newCols,
+      status: STATUS.NOT_SOLVED,
+      progress: {
+        i: 0,
+        j: 0,
+      },
     });
   }
 
   async startSorting(): Promise<void> {
     const cols: Array<Col> = Array.from(this.state.cols);
-    let i = 0;
+
+    let i = this.state.progress.i || 0;
+
+    this.setState({
+      status: STATUS.SORTING,
+    });
 
     while (i < cols.length) {
       let j = i;
-      cols[i].active = true;
+
+      if (this.state.progress.i || this.state.progress.j) {
+        const activeCol = cols.find((c) => c.active);
+
+        j = this.state.progress.j;
+
+        if (activeCol) {
+          activeCol.active = false;
+          this.updateCols(cols);
+        }
+
+        this.setState({ progress: { i: 0, j: 0 } });
+      }
+
+      cols[j].active = true;
       this.updateCols(cols);
       await sleep();
 
       while (j > 0) {
-        if (cols[j].value <= cols[j - 1].value) {
+        if (this.state.status !== STATUS.SORTING) {
+          this.setState({
+            progress: { i, j },
+          });
+
+          return;
+        }
+
+        if (cols[j].value < cols[j - 1].value) {
           const temp = cols[j];
           cols[j] = cols[j - 1];
           cols[j - 1] = temp;
@@ -67,6 +113,14 @@ class App extends Component<AppProps, AppState> {
 
       i += 1;
     }
+
+    this.setState({
+      status: STATUS.SOLVED,
+    });
+  }
+
+  async pauseSorting(): Promise<void> {
+    this.setState({ status: STATUS.PAUSED });
   }
 
   updateCols(updatedCols: Array<Col>): void {
@@ -83,6 +137,8 @@ class App extends Component<AppProps, AppState> {
         <Footer
           reset={this.resetCols.bind(this)}
           start={this.startSorting.bind(this)}
+          pause={this.pauseSorting.bind(this)}
+          status={this.state.status}
         />
       </div>
     );
