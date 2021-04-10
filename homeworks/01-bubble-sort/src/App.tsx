@@ -7,7 +7,6 @@ import Main from "./components/Main";
 import { Col } from "./typings/index";
 
 import generateCols from "./helpers/generate_cols";
-import sleep from "./helpers/sleep";
 
 import CONFIG from "./config";
 
@@ -20,10 +19,6 @@ export enum STATUS {
   SOLVED,
 }
 
-export type AppConfig = {
-  stepInterval: number;
-};
-
 type AppProps = {};
 
 type AppState = {
@@ -33,7 +28,9 @@ type AppState = {
     i: number;
     j: number;
   };
-  config: AppConfig;
+  stepInterval: number;
+  stepByStepMode: boolean;
+  stepTimeout: ReturnType<typeof setTimeout> | number;
 };
 
 class App extends Component<AppProps, AppState> {
@@ -44,9 +41,9 @@ class App extends Component<AppProps, AppState> {
       i: 0,
       j: 0,
     },
-    config: {
-      stepInterval: CONFIG.SORTING_DELAY,
-    },
+    stepInterval: CONFIG.SORTING_DELAY,
+    stepByStepMode: true,
+    stepTimeout: 0,
   };
 
   componentDidMount(): void {
@@ -56,94 +53,89 @@ class App extends Component<AppProps, AppState> {
   resetCols(): void {
     const newCols = generateCols();
 
+    if (this.state.stepTimeout > 0) {
+      clearTimeout(this.state.stepTimeout);
+    }
+
     this.setState({
       cols: newCols,
       status: STATUS.NOT_SOLVED,
       progress: {
-        i: 0,
+        i: -1,
         j: 0,
       },
+      stepTimeout: 0,
     });
   }
 
-  async startSorting(): Promise<void> {
-    const cols: Array<Col> = Array.from(this.state.cols);
-
-    let i = this.state.progress.i || 0;
-
-    this.setState({
-      status: STATUS.SORTING,
-    });
-
-    while (i < cols.length) {
-      let j = i;
-
-      if (this.state.progress.i || this.state.progress.j) {
-        const activeCol = cols.find((c) => c.active);
-
-        j = this.state.progress.j;
-
-        if (activeCol) {
-          activeCol.active = false;
-          this.updateCols(cols);
-        }
-
-        this.setState({ progress: { i: 0, j: 0 } });
-      }
-
-      cols[j].active = true;
-      this.updateCols(cols);
-      await sleep(this.state.config.stepInterval);
-
-      while (j > 0) {
-        if (this.state.status !== STATUS.SORTING) {
-          if (this.state.status === STATUS.NOT_SOLVED) {
-            i = 0;
-            j = 0;
-          }
-
-          this.setState({
-            progress: { i, j },
-          });
-
-          return;
-        }
-
-        if (cols[j].value < cols[j - 1].value) {
-          const temp = cols[j];
-          cols[j] = cols[j - 1];
-          cols[j - 1] = temp;
-        } else {
-          cols[j].active = false;
-          this.updateCols(cols);
-          break;
-        }
-
-        this.updateCols(cols);
-        await sleep(this.state.config.stepInterval);
-        j -= 1;
-      }
-
-      cols[0].active = false;
-      this.updateCols(cols);
-
-      i += 1;
+  sortingStep(): void {
+    if (this.state.status !== STATUS.SORTING) {
+      return;
     }
 
-    this.setState({
-      status: STATUS.SOLVED,
-    });
-  }
+    const cols: Array<Col> = Array.from(this.state.cols);
+    let { i, j } = this.state.progress;
 
-  updateCols(updatedCols: Array<Col>): void {
+    if (j > 0) {
+      if (cols[j].value < cols[j - 1].value) {
+        const temp = cols[j];
+        cols[j] = cols[j - 1];
+        cols[j - 1] = temp;
+
+        j -= 1;
+      } else {
+        i += 1;
+        j = i;
+      }
+    } else {
+      i += 1;
+      j = i;
+    }
+
+    cols.forEach((c) => (c.active = false));
+
+    if (i >= cols.length) {
+      this.setState({
+        status: STATUS.SOLVED,
+        progress: {
+          i: -1,
+          j: 0,
+        },
+      });
+
+      return;
+    }
+
+    cols[j].active = true;
+
     this.setState({
-      cols: updatedCols,
+      cols,
+      progress: { i, j },
     });
+
+    if (this.state.stepByStepMode) {
+      this.setState({
+        status: STATUS.PAUSED,
+      });
+    } else {
+      const stepTimeout = setTimeout(
+        this.sortingStep.bind(this),
+        this.state.stepInterval
+      );
+
+      this.setState({ stepTimeout });
+    }
   }
 
   start(e: MouseEvent<HTMLButtonElement>): void {
     e.preventDefault();
-    this.startSorting();
+
+    this.setState(
+      {
+        status: STATUS.SORTING,
+      },
+      this.sortingStep
+    );
   }
 
   pause(e: MouseEvent<HTMLButtonElement>): void {
@@ -158,9 +150,13 @@ class App extends Component<AppProps, AppState> {
 
   changeInterval(e: ChangeEvent<HTMLInputElement>): void {
     this.setState({
-      config: {
-        stepInterval: +e.target.value,
-      },
+      stepInterval: +e.target.value,
+    });
+  }
+
+  changeMode(e: ChangeEvent<HTMLInputElement>): void {
+    this.setState({
+      stepByStepMode: e.target.checked,
     });
   }
 
@@ -174,8 +170,10 @@ class App extends Component<AppProps, AppState> {
           start={this.start.bind(this)}
           pause={this.pause.bind(this)}
           changeInterval={this.changeInterval.bind(this)}
+          changeMode={this.changeMode.bind(this)}
           status={this.state.status}
-          config={this.state.config}
+          stepInterval={this.state.stepInterval}
+          stepByStepMode={this.state.stepByStepMode}
         />
       </div>
     );

@@ -27,21 +27,25 @@ footer {
       text-align: center;
       font-size: 1.5em;
       color: #fff;
-      padding: 1em 0;
+      padding: 1em 0 0.5em;
     }
 
     .options-container {
       display: flex;
       align-items: flex-start;
       justify-content: center;
+      flex-wrap: wrap;
 
       fieldset {
         margin: 1em;
         border: none;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 0.5em;
 
         label {
           color: #fff;
           margin-right: 1em;
+          user-select: none;
         }
 
         input[type="range"] {

@@ -1,15 +1,17 @@
 import { ChangeEvent, Component, MouseEvent } from "react";
 import "../styles/Footer.scss";
 
-import { STATUS, AppConfig } from "../App";
+import { STATUS } from "../App";
 
 type FooterProps = {
   reset: (e: MouseEvent<HTMLButtonElement>) => void;
   start: (e: MouseEvent<HTMLButtonElement>) => void;
   pause: (e: MouseEvent<HTMLButtonElement>) => void;
   changeInterval: (e: ChangeEvent<HTMLInputElement>) => void;
+  changeMode: (e: ChangeEvent<HTMLInputElement>) => void;
   status: STATUS;
-  config: AppConfig;
+  stepInterval: number;
+  stepByStepMode: boolean;
 };
 
 class Footer extends Component<FooterProps> {
@@ -33,28 +35,39 @@ class Footer extends Component<FooterProps> {
   }
 
   render() {
-    const { changeInterval, reset, start, pause, status, config } = this.props;
+    const {
+      changeInterval,
+      changeMode,
+      reset,
+      start,
+      pause,
+      status,
+      stepInterval,
+      stepByStepMode,
+    } = this.props;
 
     return (
       <footer>
         <div className="controls">
           <button onClick={reset}>New set</button>
-          {status === STATUS.SORTING ? (
+          {status === STATUS.SORTING && !stepByStepMode ? (
             <button onClick={pause}>Pause</button>
           ) : (
-            <button onClick={start}>Start</button>
+            <button onClick={start}>
+              {stepByStepMode ? "Next step" : "Start"}
+            </button>
           )}
         </div>
         <div className="status">
           <p>{this.getCurrentStatus()}</p>
         </div>
         <div className="options">
-          <h2>Options section</h2>
+          <h2>Options:</h2>
           <div className="options-container">
             <fieldset>
               <label htmlFor="interval">
-                Step interval (
-                {config.stepInterval.toString().padStart(4, " ") + "ms"}):{" "}
+                Step interval ({stepInterval.toString().padStart(4, " ") + "ms"}
+                )
               </label>
               <input
                 type="range"
@@ -64,7 +77,17 @@ class Footer extends Component<FooterProps> {
                 max="1000"
                 step="10"
                 onChange={changeInterval}
-                value={config.stepInterval}
+                value={stepInterval}
+              />
+            </fieldset>
+            <fieldset>
+              <label htmlFor="stepMode">Step-by-step mode:</label>
+              <input
+                id="stepMode"
+                type="checkbox"
+                value="1"
+                onChange={changeMode}
+                checked={stepByStepMode}
               />
             </fieldset>
           </div>
