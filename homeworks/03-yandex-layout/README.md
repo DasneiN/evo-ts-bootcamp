@@ -1,7 +1,7 @@
 # 01-Bubble-Sort
 
 ## Link to deployed project
-[https://evo-hometask-01-bubble-sort.surge.sh/](https://evo-hometask-01-bubble-sort.surge.sh/)
+[https://evo-hometask-03-yandex-layout.surge.sh/](https://evo-hometask-03-yandex-layout.surge.sh/)
 
 ## Task requirements:
 #### What is required:
@@ -13,7 +13,7 @@
 - [x] Different rows height (images inside each row must have similar height).
 
 #### Super extra features:
-- [ ] Implement search by text
+- [x] Implement search by text
 
 ## Available Scripts
 

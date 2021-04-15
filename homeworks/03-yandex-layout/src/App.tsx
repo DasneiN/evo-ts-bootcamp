@@ -1,5 +1,6 @@
-import { Component } from "react";
+import { ChangeEvent, Component } from "react";
 
+import SearchBar from "./components/SearchBar";
 import ImagesContainer from "./components/ImagesContainer";
 
 const baseUrl: string = `https://api.unsplash.com/search/photos?client_id=${process.env.REACT_APP_UNSPLASH_CLIENT_ID}&per_page=20`;
@@ -23,18 +24,26 @@ export interface AppImage {
 }
 
 interface AppState {
-  searchQuery: string;
+  searchText: string;
   images: Array<AppImage>;
 }
 
 class App extends Component<{}, AppState> {
   state = {
-    searchQuery: "nature",
+    searchText: "animals",
     images: [],
   };
 
-  componentDidMount() {
-    fetch(`${baseUrl}&query=${this.state.searchQuery}`)
+  onSearchInputChange(e: ChangeEvent<HTMLInputElement>) {
+    const searchText = e.target.value;
+
+    this.setState({
+      searchText,
+    });
+  }
+
+  search(): void {
+    fetch(`${baseUrl}&query=${this.state.searchText}`)
       .then((res) => {
         return res.json();
       })
@@ -58,9 +67,18 @@ class App extends Component<{}, AppState> {
       });
   }
 
+  componentDidMount() {
+    this.search();
+  }
+
   render() {
     return (
       <div className="App">
+        <SearchBar
+          searchText={this.state.searchText}
+          onSearchInputChange={this.onSearchInputChange.bind(this)}
+          search={this.search.bind(this)}
+        />
         <ImagesContainer images={this.state.images} />
       </div>
     );
