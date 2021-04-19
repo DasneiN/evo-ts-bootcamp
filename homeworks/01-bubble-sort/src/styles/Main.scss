@@ -1,0 +1,24 @@
+main {
+    display: flex;
+    justify-content: center;
+    margin-top: 2em;
+
+    .cols-container {
+        height: 200px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+
+        .col {
+            width: 10px;
+            height: 200px;
+            background-color: #faebd7;
+            border: 1px solid #c7b7a3;
+            border-radius: 4px;
+
+            &.active {
+                background-color: darken(#faebd7, 20%);
+            }
+        }
+    }
+}
