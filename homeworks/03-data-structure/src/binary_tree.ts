@@ -1,4 +1,4 @@
-import { IBinaryTree, IBinarySearchTree, TreeNode } from "./interfaces";
+import { IBinaryTree, TreeNode } from "./interfaces";
 
 export enum TraverseType {
   BFS,
